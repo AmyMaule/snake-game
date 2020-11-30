@@ -35,6 +35,7 @@ if (isStorage && JSON.parse(localStorage.getItem("highscore"))) {
 }
 
 let changeScore = () => {
+    if (score < JSON.parse(localStorage.getItem("highscore"))) highscore = JSON.parse(localStorage.getItem("highscore"));
     if (currentSnake.length <= 4) {
         score = 0;
     } else if (currentSnake.length > 4) {
