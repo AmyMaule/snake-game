@@ -1,4 +1,4 @@
-let board = document.getElementById("game-board");
+let board = document.querySelector(".game-board");
 let width = 24;
 let height = 24;
 let boardSquares = [];
@@ -52,6 +52,8 @@ let createBoard = squares => {
         square.classList.add("board-square");
         if (i > 551 || i%24 == 0 || (i+1)%24 ==0 || i < 24) {
             square.classList.add("empty");
+            if (i < 24 || i > 551) square.classList.add("empty-top");
+            if (i%24 == 0 || (i+1)%24 ==0) square.classList.add("empty-side");
         }
         board.appendChild(square);
         squares.push(square);
@@ -89,17 +91,17 @@ let moveRight = () => {
     let snake0 = parseInt(currentSnake[0].dataset.id);
     if (movingUp && boardSquares[snake0+1].classList.contains("empty")) endGame();
     if (movingDown && boardSquares[snake0+1].classList.contains("empty")) endGame();
-    snakeTouchesSnake();
     if (snakeTouchesLRWall() || movingLeft) return;
     if (!gameOver) {
     let currentHead = parseInt(currentSnake[0].dataset.id);
     let newHead = currentHead+1;
     currentSnake.unshift(boardSquares[newHead]);
     currentSnake[0].classList.add("snake");
-    if (!currentSnake[0].classList.contains("apple")) {
+    snakeTouchesSnake();
+    if (!currentSnake[0].classList.contains("apple") && !gameOver) {
         currentSnake[currentSnake.length-1].classList.remove("snake");
         currentSnake.pop();
-     } else {
+     } else if (currentSnake[0].classList.contains("apple")) {
          currentSnake[0].classList.remove("apple");
          spawnApple();
      }
@@ -114,20 +116,20 @@ let moveDown = () => {
     let snake0 = parseInt(currentSnake[0].dataset.id);
     if (movingLeft && boardSquares[snake0+24].classList.contains("empty")) endGame();
     if (movingRight && boardSquares[snake0+24].classList.contains("empty")) endGame();
-    snakeTouchesSnake();
     if (snakeTouchesUDWall() || movingUp) return;
     if (!gameOver) {
     let currentHead = parseInt(currentSnake[0].dataset.id);
     let newHead = currentHead+24;
     currentSnake.unshift(boardSquares[newHead]);
     currentSnake[0].classList.add("snake");
-    if (!currentSnake[0].classList.contains("apple")) {
+    snakeTouchesSnake();
+    if (!currentSnake[0].classList.contains("apple") && !gameOver) {
         currentSnake[currentSnake.length-1].classList.remove("snake");
         currentSnake.pop();
-     } else {
-        currentSnake[0].classList.remove("apple");
-        spawnApple();
-    }
+     } else if (currentSnake[0].classList.contains("apple")) {
+         currentSnake[0].classList.remove("apple");
+         spawnApple();
+     }
     movingDown = true;
     movingLeft = false;
     movingUp = false;
@@ -139,20 +141,20 @@ let moveUp = () => {
     let snake0 = parseInt(currentSnake[0].dataset.id);
     if (movingLeft && boardSquares[snake0-24].classList.contains("empty")) endGame();
     if (movingRight && boardSquares[snake0-24].classList.contains("empty")) endGame();
-    snakeTouchesSnake();
     if (snakeTouchesUDWall() || movingDown) return;
     if (!gameOver) {
     let currentHead = parseInt(currentSnake[0].dataset.id);
     let newHead = currentHead-24;
     currentSnake.unshift(boardSquares[newHead]);
     currentSnake[0].classList.add("snake");
-    if (!currentSnake[0].classList.contains("apple")) {
+    snakeTouchesSnake();
+    if (!currentSnake[0].classList.contains("apple") && !gameOver) {
         currentSnake[currentSnake.length-1].classList.remove("snake");
         currentSnake.pop();
-     } else {
-        currentSnake[0].classList.remove("apple");
-        spawnApple();
-    }
+     } else if (currentSnake[0].classList.contains("apple")) {
+         currentSnake[0].classList.remove("apple");
+         spawnApple();
+     }
     movingDown = false;
     movingLeft = false;
     movingUp = true;
@@ -164,20 +166,20 @@ let moveLeft = () => {
     let snake0 = parseInt(currentSnake[0].dataset.id);
     if (movingUp && boardSquares[snake0-1].classList.contains("empty")) endGame();
     if (movingDown && boardSquares[snake0-1].classList.contains("empty")) endGame();
-    snakeTouchesSnake();
     if (snakeTouchesLRWall() || movingRight) return;
     if (!gameOver) {
     let currentHead = parseInt(currentSnake[0].dataset.id);
     let newHead = currentHead-1;
     currentSnake.unshift(boardSquares[newHead]);
     currentSnake[0].classList.add("snake");
-    if (!currentSnake[0].classList.contains("apple")) {
-       currentSnake[currentSnake.length-1].classList.remove("snake");
-       currentSnake.pop();
-    } else {
-        currentSnake[0].classList.remove("apple");
-        spawnApple();
-    }
+    snakeTouchesSnake();
+    if (!currentSnake[0].classList.contains("apple") && !gameOver) {
+        currentSnake[currentSnake.length-1].classList.remove("snake");
+        currentSnake.pop();
+     } else if (currentSnake[0].classList.contains("apple")) {
+         currentSnake[0].classList.remove("apple");
+         spawnApple();
+     }
     movingDown = false;
     movingLeft = true;
     movingUp = false;
@@ -218,7 +220,10 @@ let endGame = () => {
 
 let snakeTouchesSnake = () => {
     for(let i = 0; i < currentSnake.length; i++) {
-        if (i != 0 && currentSnake[0] == currentSnake[i]) endGame();
+        if (i != 0 && currentSnake[0] == currentSnake[i]) {
+            endGame();
+            gameOver = true;
+        }
     }
 };
 
