@@ -189,10 +189,10 @@ let moveLeft = () => {
 
 let snakeDirection = e => {
     let direction = e.keyCode;
-    if (direction === 37) moveLeft();
-    if (direction === 38) moveUp();
-    if (direction === 39) moveRight();
-    if (direction === 40) moveDown();
+    if (direction === 37 || direction === 65) moveLeft();
+    if (direction === 38 || direction === 87) moveUp();
+    if (direction === 39 || direction === 68) moveRight();
+    if (direction === 40 || direction === 83) moveDown();
 };
 
 let moveSnake = () => {
